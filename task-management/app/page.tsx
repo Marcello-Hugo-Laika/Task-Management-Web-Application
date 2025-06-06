@@ -31,7 +31,7 @@ interface Task {
   updatedAt: string
 }
 
-type FilterType = "all" | "low" | "medium" | "high"
+type FilterType = "all" | "pending" | "in-progress" | "completed"
 
 export default function TaskManager() {
   const [tasks, setTasks] = useState<Task[]>([])
@@ -143,10 +143,27 @@ export default function TaskManager() {
     setIsEditDialogOpen(true)
   }
 
-  const filteredTasks = tasks.filter((task) => {
-    if (filter === "all") return true
-    return task.priority === filter
-  })
+  // Priority sorting function
+  const getPriorityOrder = (priority: Task["priority"]) => {
+    switch (priority) {
+      case "high":
+        return 1
+      case "medium":
+        return 2
+      case "low":
+        return 3
+      default:
+        return 4
+    }
+  }
+
+  // Filter by status and sort by priority
+  const filteredAndSortedTasks = tasks
+    .filter((task) => {
+      if (filter === "all") return true
+      return task.status === filter
+    })
+    .sort((a, b) => getPriorityOrder(a.priority) - getPriorityOrder(b.priority))
 
   const getPriorityColor = (priority: Task["priority"]) => {
     switch (priority) {
@@ -181,7 +198,7 @@ export default function TaskManager() {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Task Management</h1>
-          <p className="text-gray-600">Organize and track your tasks efficiently</p>
+          <p className="text-gray-600">Organize and track your tasks efficiently - automatically sorted by priority</p>
         </div>
 
         {/* Controls */}
@@ -277,10 +294,10 @@ export default function TaskManager() {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Priorities</SelectItem>
-                <SelectItem value="low">Low Priority</SelectItem>
-                <SelectItem value="medium">Medium Priority</SelectItem>
-                <SelectItem value="high">High Priority</SelectItem>
+                <SelectItem value="all">All Tasks</SelectItem>
+                <SelectItem value="pending">Pending</SelectItem>
+                <SelectItem value="in-progress">In Progress</SelectItem>
+                <SelectItem value="completed">Completed</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -296,40 +313,56 @@ export default function TaskManager() {
           </Card>
           <Card>
             <CardContent className="p-4">
-              <div className="text-2xl font-bold text-red-600">{tasks.filter((t) => t.priority === "high").length}</div>
-              <div className="text-sm text-gray-600">High Priority</div>
+              <div className="text-2xl font-bold text-gray-600">
+                {tasks.filter((t) => t.status === "pending").length}
+              </div>
+              <div className="text-sm text-gray-600">Pending</div>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="p-4">
-              <div className="text-2xl font-bold text-yellow-600">
-                {tasks.filter((t) => t.priority === "medium").length}
+              <div className="text-2xl font-bold text-blue-600">
+                {tasks.filter((t) => t.status === "in-progress").length}
               </div>
-              <div className="text-sm text-gray-600">Medium Priority</div>
+              <div className="text-sm text-gray-600">In Progress</div>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="p-4">
               <div className="text-2xl font-bold text-green-600">
-                {tasks.filter((t) => t.priority === "low").length}
+                {tasks.filter((t) => t.status === "completed").length}
               </div>
-              <div className="text-sm text-gray-600">Low Priority</div>
+              <div className="text-sm text-gray-600">Completed</div>
             </CardContent>
           </Card>
         </div>
 
+        {/* Priority Legend */}
+        <div className="mb-4">
+          <div className="flex items-center gap-4 text-sm text-gray-600">
+            <span>Tasks sorted by priority:</span>
+            <div className="flex items-center gap-2">
+              <Badge className="bg-red-100 text-red-800 border-red-200">High</Badge>
+              <span>→</span>
+              <Badge className="bg-yellow-100 text-yellow-800 border-yellow-200">Medium</Badge>
+              <span>→</span>
+              <Badge className="bg-green-100 text-green-800 border-green-200">Low</Badge>
+            </div>
+          </div>
+        </div>
+
         {/* Task List */}
         <div className="grid gap-4">
-          {filteredTasks.length === 0 ? (
+          {filteredAndSortedTasks.length === 0 ? (
             <Card>
               <CardContent className="p-8 text-center">
                 <div className="text-gray-500">
-                  {filter === "all" ? "No tasks yet. Create your first task!" : `No ${filter} priority tasks found.`}
+                  {filter === "all" ? "No tasks yet. Create your first task!" : `No ${filter} tasks found.`}
                 </div>
               </CardContent>
             </Card>
           ) : (
-            filteredTasks.map((task) => (
+            filteredAndSortedTasks.map((task) => (
               <Card key={task.id} className="hover:shadow-md transition-shadow">
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between">
