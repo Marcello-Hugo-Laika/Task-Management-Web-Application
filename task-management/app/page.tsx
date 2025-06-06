@@ -31,7 +31,7 @@ interface Task {
   updatedAt: string
 }
 
-type FilterType = "all" | "pending" | "in-progress" | "completed"
+type FilterType = "all" | "low" | "medium" | "high"
 
 export default function TaskManager() {
   const [tasks, setTasks] = useState<Task[]>([])
@@ -145,7 +145,7 @@ export default function TaskManager() {
 
   const filteredTasks = tasks.filter((task) => {
     if (filter === "all") return true
-    return task.status === filter
+    return task.priority === filter
   })
 
   const getPriorityColor = (priority: Task["priority"]) => {
@@ -277,10 +277,10 @@ export default function TaskManager() {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Tasks</SelectItem>
-                <SelectItem value="pending">Pending</SelectItem>
-                <SelectItem value="in-progress">In Progress</SelectItem>
-                <SelectItem value="completed">Completed</SelectItem>
+                <SelectItem value="all">All Priorities</SelectItem>
+                <SelectItem value="low">Low Priority</SelectItem>
+                <SelectItem value="medium">Medium Priority</SelectItem>
+                <SelectItem value="high">High Priority</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -296,26 +296,24 @@ export default function TaskManager() {
           </Card>
           <Card>
             <CardContent className="p-4">
-              <div className="text-2xl font-bold text-yellow-600">
-                {tasks.filter((t) => t.status === "pending").length}
-              </div>
-              <div className="text-sm text-gray-600">Pending</div>
+              <div className="text-2xl font-bold text-red-600">{tasks.filter((t) => t.priority === "high").length}</div>
+              <div className="text-sm text-gray-600">High Priority</div>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="p-4">
-              <div className="text-2xl font-bold text-blue-600">
-                {tasks.filter((t) => t.status === "in-progress").length}
+              <div className="text-2xl font-bold text-yellow-600">
+                {tasks.filter((t) => t.priority === "medium").length}
               </div>
-              <div className="text-sm text-gray-600">In Progress</div>
+              <div className="text-sm text-gray-600">Medium Priority</div>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="p-4">
               <div className="text-2xl font-bold text-green-600">
-                {tasks.filter((t) => t.status === "completed").length}
+                {tasks.filter((t) => t.priority === "low").length}
               </div>
-              <div className="text-sm text-gray-600">Completed</div>
+              <div className="text-sm text-gray-600">Low Priority</div>
             </CardContent>
           </Card>
         </div>
@@ -326,7 +324,7 @@ export default function TaskManager() {
             <Card>
               <CardContent className="p-8 text-center">
                 <div className="text-gray-500">
-                  {filter === "all" ? "No tasks yet. Create your first task!" : `No ${filter} tasks found.`}
+                  {filter === "all" ? "No tasks yet. Create your first task!" : `No ${filter} priority tasks found.`}
                 </div>
               </CardContent>
             </Card>
