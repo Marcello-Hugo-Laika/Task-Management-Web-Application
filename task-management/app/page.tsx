@@ -167,6 +167,27 @@ export default function TaskManager() {
     }
   }
 
+  // Calculate days until due date
+  const getDaysUntilDue = (dueDate: string) => {
+    if (!dueDate) return null
+    const today = new Date()
+    const due = new Date(dueDate)
+    const diffTime = due.getTime() - today.getTime()
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+    return diffDays
+  }
+
+  // Get card border styling based on due date
+  const getCardBorderClass = (task: Task) => {
+    if (task.status === "completed") return ""
+
+    const daysUntilDue = getDaysUntilDue(task.dueDate)
+    if (daysUntilDue !== null && daysUntilDue <= 2 && daysUntilDue >= 0) {
+      return "border-red-500 shadow-red-500/50 shadow-lg animate-pulse"
+    }
+    return ""
+  }
+
   // Filter by status and sort by priority
   const filteredAndSortedTasks = tasks
     .filter((task) => {
@@ -213,16 +234,16 @@ export default function TaskManager() {
         {/* Header */}
         <div className="mb-8 flex justify-between items-center">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">Task Management</h1>
-            <p className="text-gray-600 dark:text-gray-400">
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Task Management</h1>
+            <p className="text-gray-600 dark:text-white">
               Organize and track your tasks efficiently - automatically sorted by priority
             </p>
           </div>
           {mounted && (
             <div className="flex items-center gap-2">
-              <Moon className="h-4 w-4 text-gray-700 dark:text-gray-300" />
+              <Moon className="h-4 w-4 text-gray-700 dark:text-white" />
               <Switch checked={theme === "dark"} onCheckedChange={handleThemeToggle} aria-label="Toggle dark mode" />
-              <span className="text-sm text-gray-700 dark:text-gray-300">Dark Mode</span>
+              <span className="text-sm text-gray-700 dark:text-white">Dark Mode</span>
             </div>
           )}
         </div>
@@ -314,7 +335,7 @@ export default function TaskManager() {
           </Dialog>
 
           <div className="flex items-center gap-2">
-            <Filter className="w-4 h-4" />
+            <Filter className="w-4 h-4 dark:text-white" />
             <Select value={filter} onValueChange={(value: FilterType) => setFilter(value)}>
               <SelectTrigger className="w-[180px]">
                 <SelectValue />
@@ -331,41 +352,41 @@ export default function TaskManager() {
 
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-          <Card>
+          <Card className="dark:border-white">
             <CardContent className="p-4">
-              <div className="text-2xl font-bold dark:text-gray-100">{tasks.length}</div>
-              <div className="text-sm text-gray-600 dark:text-gray-400">Total Tasks</div>
+              <div className="text-2xl font-bold dark:text-white">{tasks.length}</div>
+              <div className="text-sm text-gray-600 dark:text-white">Total Tasks</div>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="dark:border-white">
             <CardContent className="p-4">
-              <div className="text-2xl font-bold text-gray-600 dark:text-gray-300">
+              <div className="text-2xl font-bold text-gray-600 dark:text-white">
                 {tasks.filter((t) => t.status === "pending").length}
               </div>
-              <div className="text-sm text-gray-600 dark:text-gray-400">Pending</div>
+              <div className="text-sm text-gray-600 dark:text-white">Pending</div>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="dark:border-white">
             <CardContent className="p-4">
               <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
                 {tasks.filter((t) => t.status === "in-progress").length}
               </div>
-              <div className="text-sm text-gray-600 dark:text-gray-400">In Progress</div>
+              <div className="text-sm text-gray-600 dark:text-white">In Progress</div>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="dark:border-white">
             <CardContent className="p-4">
               <div className="text-2xl font-bold text-green-600 dark:text-green-400">
                 {tasks.filter((t) => t.status === "completed").length}
               </div>
-              <div className="text-sm text-gray-600 dark:text-gray-400">Completed</div>
+              <div className="text-sm text-gray-600 dark:text-white">Completed</div>
             </CardContent>
           </Card>
         </div>
 
         {/* Priority Legend */}
         <div className="mb-4">
-          <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
+          <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-white">
             <span>Tasks sorted by priority:</span>
             <div className="flex items-center gap-2">
               <Badge className="bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 border-red-200 dark:border-red-700">
@@ -386,66 +407,101 @@ export default function TaskManager() {
         {/* Task List */}
         <div className="grid gap-4">
           {filteredAndSortedTasks.length === 0 ? (
-            <Card>
+            <Card className="dark:border-white">
               <CardContent className="p-8 text-center">
-                <div className="text-gray-500 dark:text-gray-400">
+                <div className="text-gray-500 dark:text-white">
                   {filter === "all" ? "No tasks yet. Create your first task!" : `No ${filter} tasks found.`}
                 </div>
               </CardContent>
             </Card>
           ) : (
-            filteredAndSortedTasks.map((task) => (
-              <Card key={task.id} className="hover:shadow-md transition-shadow">
-                <CardContent className="p-6">
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-start gap-3 flex-1">
-                      <Checkbox
-                        checked={task.status === "completed"}
-                        onCheckedChange={() => handleToggleComplete(task.id)}
-                        className="mt-1"
-                      />
-                      <div className="flex-1">
-                        <h3
-                          className={`font-semibold text-lg ${
-                            task.status === "completed"
-                              ? "line-through text-gray-500 dark:text-gray-400"
-                              : "dark:text-gray-100"
-                          }`}
-                        >
-                          {task.title}
-                        </h3>
-                        {task.description && (
-                          <p className="text-gray-600 dark:text-gray-400 mt-1">{task.description}</p>
-                        )}
-                        <div className="flex flex-wrap items-center gap-2 mt-3">
-                          <Badge className={getPriorityColor(task.priority)}>{task.priority}</Badge>
-                          <Badge className={getStatusColor(task.status)}>{task.status}</Badge>
-                          {task.dueDate && (
-                            <div className="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400">
-                              <Calendar className="w-3 h-3" />
-                              {formatDate(task.dueDate)}
-                            </div>
-                          )}
+            filteredAndSortedTasks.map((task) => {
+              const daysUntilDue = getDaysUntilDue(task.dueDate)
+              const isUrgent =
+                daysUntilDue !== null && daysUntilDue <= 2 && daysUntilDue >= 0 && task.status !== "completed"
+
+              return (
+                <Card
+                  key={task.id}
+                  className={`hover:shadow-md transition-all duration-300 dark:border-white ${
+                    isUrgent ? "border-red-500 shadow-red-500/50 shadow-lg animate-pulse border-2" : ""
+                  }`}
+                >
+                  <CardContent className="p-6">
+                    <div className="flex items-start justify-between">
+                      <div className="flex items-start gap-3 flex-1">
+                        <Checkbox
+                          checked={task.status === "completed"}
+                          onCheckedChange={() => handleToggleComplete(task.id)}
+                          className="mt-1"
+                        />
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-1">
+                            <h3
+                              className={`font-semibold text-lg ${
+                                task.status === "completed"
+                                  ? "line-through text-gray-500 dark:text-gray-400"
+                                  : "dark:text-white"
+                              }`}
+                            >
+                              {task.title}
+                            </h3>
+                            {isUrgent && (
+                              <Badge className="bg-red-500 text-white border-red-600 text-xs animate-pulse">
+                                URGENT
+                              </Badge>
+                            )}
+                          </div>
+                          {task.description && <p className="text-gray-600 dark:text-white mt-1">{task.description}</p>}
+                          <div className="flex flex-wrap items-center gap-2 mt-3">
+                            <Badge className={getPriorityColor(task.priority)}>{task.priority}</Badge>
+                            <Badge className={getStatusColor(task.status)}>{task.status}</Badge>
+                            {task.dueDate && (
+                              <div
+                                className={`flex items-center gap-1 text-sm ${
+                                  isUrgent
+                                    ? "text-red-600 dark:text-red-400 font-semibold"
+                                    : "text-gray-500 dark:text-white"
+                                }`}
+                              >
+                                <Calendar className="w-3 h-3" />
+                                {formatDate(task.dueDate)}
+                                {daysUntilDue !== null && (
+                                  <span className="ml-1">
+                                    (
+                                    {daysUntilDue === 0
+                                      ? "Due today"
+                                      : daysUntilDue === 1
+                                        ? "Due tomorrow"
+                                        : daysUntilDue < 0
+                                          ? `${Math.abs(daysUntilDue)} days overdue`
+                                          : `${daysUntilDue} days left`}
+                                    )
+                                  </span>
+                                )}
+                              </div>
+                            )}
+                          </div>
                         </div>
                       </div>
+                      <div className="flex items-center gap-2 ml-4">
+                        <Button variant="outline" size="sm" onClick={() => openEditDialog(task)}>
+                          <Edit className="w-4 h-4" />
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleDeleteTask(task.id)}
+                          className="text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
                     </div>
-                    <div className="flex items-center gap-2 ml-4">
-                      <Button variant="outline" size="sm" onClick={() => openEditDialog(task)}>
-                        <Edit className="w-4 h-4" />
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleDeleteTask(task.id)}
-                        className="text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))
+                  </CardContent>
+                </Card>
+              )
+            })
           )}
         </div>
 
