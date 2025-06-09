@@ -209,8 +209,13 @@ export default function TaskManager() {
       if (isOverdueA && !isOverdueB) return -1
       if (!isOverdueA && isOverdueB) return 1
 
-      // If both are overdue, sort by priority (high to low)
+      // If both are overdue, sort by highest days overdue to lowest days overdue
       if (isOverdueA && isOverdueB) {
+        // Sort by days overdue (most overdue first - more negative numbers first)
+        if (daysUntilDueA !== daysUntilDueB) {
+          return (daysUntilDueA || 0) - (daysUntilDueB || 0) // More negative comes first
+        }
+        // If same number of overdue days, sort by priority (high to low)
         return getPriorityOrder(a.priority) - getPriorityOrder(b.priority)
       }
 
@@ -218,17 +223,12 @@ export default function TaskManager() {
       if (isUrgentA && !isUrgentB) return -1
       if (!isUrgentA && isUrgentB) return 1
 
-      // If both are urgent, sort by due date first (fastest due date first)
+      // If both are urgent, sort by priority only (high to low)
       if (isUrgentA && isUrgentB) {
-        // Sort by due date first (ascending - fastest due date first)
-        if (daysUntilDueA !== daysUntilDueB) {
-          return (daysUntilDueA || 0) - (daysUntilDueB || 0)
-        }
-        // If same due date, sort by priority (high to low)
         return getPriorityOrder(a.priority) - getPriorityOrder(b.priority)
       }
 
-      // If both are normal tasks, sort by priority only
+      // If both are normal tasks, sort by priority only (high to low)
       return getPriorityOrder(a.priority) - getPriorityOrder(b.priority)
     })
 
@@ -466,6 +466,10 @@ export default function TaskManager() {
             <div className="flex items-center gap-4">
               <span>Overdue Tasks (&lt;0 days):</span>
               <div className="flex items-center gap-2">
+                <span className="text-xs bg-purple-100 dark:bg-purple-900 px-2 py-1 rounded">Most Overdue</span>
+                <span>&gt;</span>
+                <span className="text-xs bg-purple-100 dark:bg-purple-900 px-2 py-1 rounded">Less Overdue</span>
+                <span className="text-sm mx-2">then by</span>
                 <Badge className="bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 border-red-200 dark:border-red-700">
                   High
                 </Badge>
@@ -480,17 +484,7 @@ export default function TaskManager() {
               </div>
             </div>
             <div className="flex items-center gap-4">
-              <span>Urgent Tasks (≤2 days):</span>
-              <div className="flex items-center gap-2">
-                <span className="text-xs bg-red-100 dark:bg-red-900 px-2 py-1 rounded">Due Today</span>
-                <span>&gt;</span>
-                <span className="text-xs bg-red-100 dark:bg-red-900 px-2 py-1 rounded">Due Tomorrow</span>
-                <span>&gt;</span>
-                <span className="text-xs bg-red-100 dark:bg-red-900 px-2 py-1 rounded">Due in 2 days</span>
-              </div>
-            </div>
-            <div className="flex items-center gap-4">
-              <span>Within same due date:</span>
+              <span>Urgent Tasks (0-2 days):</span>
               <div className="flex items-center gap-2">
                 <Badge className="bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 border-red-200 dark:border-red-700">
                   High
