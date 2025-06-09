@@ -170,11 +170,21 @@ export default function TaskManager() {
   // Calculate days until due date
   const getDaysUntilDue = (dueDate: string) => {
     if (!dueDate) return null
+
+    // Create today's date at midnight
     const today = new Date()
-    today.setHours(0, 0, 0, 0) // Reset time to start of day for accurate comparison
-    const due = new Date(dueDate)
+    today.setHours(0, 0, 0, 0)
+
+    // Create due date at midnight
+    const due = new Date(dueDate + "T00:00:00")
+    due.setHours(0, 0, 0, 0)
+
+    // Calculate difference in milliseconds
     const diffTime = due.getTime() - today.getTime()
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+
+    // Convert to days (don't use Math.ceil, use Math.floor for accurate calculation)
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24))
+
     return diffDays
   }
 
@@ -246,7 +256,8 @@ export default function TaskManager() {
 
   const formatDate = (dateString: string) => {
     if (!dateString) return "No due date"
-    return new Date(dateString).toLocaleDateString()
+    const date = new Date(dateString + "T00:00:00")
+    return date.toLocaleDateString()
   }
 
   // Handle theme toggle
