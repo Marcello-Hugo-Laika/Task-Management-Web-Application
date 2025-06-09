@@ -423,8 +423,10 @@ export default function TaskManager() {
               return (
                 <Card
                   key={task.id}
-                  className={`hover:shadow-md transition-all duration-300 dark:border-white ${
-                    isUrgent ? "border-red-500 shadow-red-500/50 shadow-lg animate-pulse border-2" : ""
+                  className={`hover:shadow-md transition-all duration-300 ${
+                    isUrgent
+                      ? "border-red-500 dark:border-red-400 shadow-red-500/50 dark:shadow-red-400/50 shadow-lg dark:shadow-lg animate-pulse border-2"
+                      : "dark:border-white"
                   }`}
                 >
                   <CardContent className="p-6">
