@@ -194,7 +194,21 @@ export default function TaskManager() {
       if (filter === "all") return true
       return task.status === filter
     })
-    .sort((a, b) => getPriorityOrder(a.priority) - getPriorityOrder(b.priority))
+    .sort((a, b) => {
+      // Calculate urgency for both tasks
+      const daysUntilDueA = getDaysUntilDue(a.dueDate)
+      const daysUntilDueB = getDaysUntilDue(b.dueDate)
+
+      const isUrgentA = daysUntilDueA !== null && daysUntilDueA <= 2 && daysUntilDueA >= 0 && a.status !== "completed"
+      const isUrgentB = daysUntilDueB !== null && daysUntilDueB <= 2 && daysUntilDueB >= 0 && b.status !== "completed"
+
+      // If one is urgent and the other is not, urgent comes first
+      if (isUrgentA && !isUrgentB) return -1
+      if (!isUrgentA && isUrgentB) return 1
+
+      // If both are urgent or both are normal, sort by priority
+      return getPriorityOrder(a.priority) - getPriorityOrder(b.priority)
+    })
 
   const getPriorityColor = (priority: Task["priority"]) => {
     switch (priority) {
@@ -386,20 +400,30 @@ export default function TaskManager() {
 
         {/* Priority Legend */}
         <div className="mb-4">
-          <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-white">
-            <span>Tasks sorted by priority:</span>
-            <div className="flex items-center gap-2">
-              <Badge className="bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 border-red-200 dark:border-red-700">
-                High
-              </Badge>
-              <span>→</span>
-              <Badge className="bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 border-yellow-200 dark:border-yellow-700">
-                Medium
-              </Badge>
-              <span>→</span>
-              <Badge className="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 border-green-200 dark:border-green-700">
-                Low
-              </Badge>
+          <div className="flex flex-col gap-2 text-sm text-gray-600 dark:text-white">
+            <div className="flex items-center gap-4">
+              <span className="font-semibold">Sorting Order:</span>
+              <div className="flex items-center gap-2">
+                <Badge className="bg-red-500 text-white border-red-600 text-xs animate-pulse">URGENT</Badge>
+                <span>→</span>
+                <span>Normal Tasks</span>
+              </div>
+            </div>
+            <div className="flex items-center gap-4">
+              <span>Within each group (Priority):</span>
+              <div className="flex items-center gap-2">
+                <Badge className="bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 border-red-200 dark:border-red-700">
+                  High
+                </Badge>
+                <span>→</span>
+                <Badge className="bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 border-yellow-200 dark:border-yellow-700">
+                  Medium
+                </Badge>
+                <span>→</span>
+                <Badge className="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 border-green-200 dark:border-green-700">
+                  Low
+                </Badge>
+              </div>
             </div>
           </div>
         </div>
