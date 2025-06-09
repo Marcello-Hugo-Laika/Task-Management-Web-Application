@@ -576,7 +576,7 @@ export default function TaskManager() {
                     isOverdue
                       ? "border-red-500 shadow-red-500/50 shadow-lg animate-pulse border-2"
                       : isUrgent
-                        ? "border-orange-500 shadow-orange-500/50 shadow-lg animate-pulse border-2"
+                        ? "border-orange-500 border-2 hover:shadow-orange-500/50 hover:shadow-lg"
                         : "dark:border-white"
                   }`}
                 >
@@ -605,7 +605,7 @@ export default function TaskManager() {
                               </Badge>
                             )}
                             {isUrgent && !isOverdue && (
-                              <Badge className="bg-orange-500 text-white border-orange-600 text-xs animate-pulse hover:bg-orange-500 dark:hover:bg-orange-500">
+                              <Badge className="bg-orange-500 text-white border-orange-600 text-xs hover:bg-orange-500 dark:hover:bg-orange-500">
                                 URGENT
                               </Badge>
                             )}
