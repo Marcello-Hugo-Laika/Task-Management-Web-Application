@@ -19,7 +19,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Switch } from "@/components/ui/switch"
-import { Plus, Edit, Trash2, Calendar, Filter, Moon } from "lucide-react"
+import { Plus, Edit, Trash2, Calendar, Filter, Moon, AlertTriangle } from "lucide-react"
 import { useTheme } from "next-themes"
 
 interface Task {
@@ -171,21 +171,11 @@ export default function TaskManager() {
   const getDaysUntilDue = (dueDate: string) => {
     if (!dueDate) return null
     const today = new Date()
+    today.setHours(0, 0, 0, 0) // Reset time to start of day for accurate comparison
     const due = new Date(dueDate)
     const diffTime = due.getTime() - today.getTime()
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
     return diffDays
-  }
-
-  // Get card border styling based on due date
-  const getCardBorderClass = (task: Task) => {
-    if (task.status === "completed") return ""
-
-    const daysUntilDue = getDaysUntilDue(task.dueDate)
-    if (daysUntilDue !== null && daysUntilDue <= 2 && daysUntilDue >= 0) {
-      return "border-red-500 shadow-red-500/50 shadow-lg animate-pulse"
-    }
-    return ""
   }
 
   // Filter by status and sort by priority
@@ -199,10 +189,22 @@ export default function TaskManager() {
       const daysUntilDueA = getDaysUntilDue(a.dueDate)
       const daysUntilDueB = getDaysUntilDue(b.dueDate)
 
+      const isOverdueA = daysUntilDueA !== null && daysUntilDueA < 0 && a.status !== "completed"
+      const isOverdueB = daysUntilDueB !== null && daysUntilDueB < 0 && b.status !== "completed"
+
       const isUrgentA = daysUntilDueA !== null && daysUntilDueA <= 2 && daysUntilDueA >= 0 && a.status !== "completed"
       const isUrgentB = daysUntilDueB !== null && daysUntilDueB <= 2 && daysUntilDueB >= 0 && b.status !== "completed"
 
-      // If one is urgent and the other is not, urgent comes first
+      // If one is overdue and the other is not, overdue comes first
+      if (isOverdueA && !isOverdueB) return -1
+      if (!isOverdueA && isOverdueB) return 1
+
+      // If both are overdue, sort by priority (high to low)
+      if (isOverdueA && isOverdueB) {
+        return getPriorityOrder(a.priority) - getPriorityOrder(b.priority)
+      }
+
+      // If one is urgent and the other is not (and neither is overdue), urgent comes first
       if (isUrgentA && !isUrgentB) return -1
       if (!isUrgentA && isUrgentB) return 1
 
@@ -251,6 +253,19 @@ export default function TaskManager() {
   const handleThemeToggle = () => {
     setTheme(theme === "dark" ? "light" : "dark")
   }
+
+  // Get overdue and urgent counts
+  const overdueCount = tasks.filter(
+    (t) => getDaysUntilDue(t.dueDate) !== null && getDaysUntilDue(t.dueDate)! < 0 && t.status !== "completed",
+  ).length
+
+  const urgentCount = tasks.filter(
+    (t) =>
+      getDaysUntilDue(t.dueDate) !== null &&
+      getDaysUntilDue(t.dueDate)! <= 2 &&
+      getDaysUntilDue(t.dueDate)! >= 0 &&
+      t.status !== "completed",
+  ).length
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-4 transition-colors duration-200">
@@ -375,13 +390,29 @@ export default function TaskManager() {
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-6 gap-4 mb-6">
           <Card className="dark:border-white">
             <CardContent className="p-4">
               <div className="text-2xl font-bold dark:text-white">{tasks.length}</div>
               <div className="text-sm text-gray-600 dark:text-white">Total Tasks</div>
             </CardContent>
           </Card>
+          {overdueCount > 0 && (
+            <Card className="dark:border-white border-purple-500 dark:border-purple-400 bg-purple-50 dark:bg-purple-900/20">
+              <CardContent className="p-4">
+                <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">{overdueCount}</div>
+                <div className="text-sm text-purple-600 dark:text-purple-400">Overdue</div>
+              </CardContent>
+            </Card>
+          )}
+          {urgentCount > 0 && (
+            <Card className="dark:border-white border-red-500 dark:border-red-400 bg-red-50 dark:bg-red-900/20">
+              <CardContent className="p-4">
+                <div className="text-2xl font-bold text-red-600 dark:text-red-400">{urgentCount}</div>
+                <div className="text-sm text-red-600 dark:text-red-400">Urgent</div>
+              </CardContent>
+            </Card>
+          )}
           <Card className="dark:border-white">
             <CardContent className="p-4">
               <div className="text-2xl font-bold text-gray-600 dark:text-white">
@@ -414,9 +445,27 @@ export default function TaskManager() {
             <div className="flex items-center gap-4">
               <span className="font-semibold">Sorting Order:</span>
               <div className="flex items-center gap-2">
+                <Badge className="bg-purple-500 text-white border-purple-600 text-xs">OVERDUE</Badge>
+                <span>&gt;</span>
                 <Badge className="bg-red-500 text-white border-red-600 text-xs animate-pulse">URGENT</Badge>
                 <span>&gt;</span>
                 <span>Normal Tasks</span>
+              </div>
+            </div>
+            <div className="flex items-center gap-4">
+              <span>Overdue Tasks (&lt;0 days):</span>
+              <div className="flex items-center gap-2">
+                <Badge className="bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 border-red-200 dark:border-red-700">
+                  High
+                </Badge>
+                <span>&gt;</span>
+                <Badge className="bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 border-yellow-200 dark:border-yellow-700">
+                  Medium
+                </Badge>
+                <span>&gt;</span>
+                <Badge className="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 border-green-200 dark:border-green-700">
+                  Low
+                </Badge>
               </div>
             </div>
             <div className="flex items-center gap-4">
@@ -477,6 +526,7 @@ export default function TaskManager() {
           ) : (
             filteredAndSortedTasks.map((task) => {
               const daysUntilDue = getDaysUntilDue(task.dueDate)
+              const isOverdue = daysUntilDue !== null && daysUntilDue < 0 && task.status !== "completed"
               const isUrgent =
                 daysUntilDue !== null && daysUntilDue <= 2 && daysUntilDue >= 0 && task.status !== "completed"
 
@@ -484,9 +534,11 @@ export default function TaskManager() {
                 <Card
                   key={task.id}
                   className={`hover:shadow-md transition-all duration-300 ${
-                    isUrgent
-                      ? "border-red-500 dark:border-red-400 shadow-red-500/50 dark:shadow-red-400/50 shadow-lg dark:shadow-lg animate-pulse border-2"
-                      : "dark:border-white"
+                    isOverdue
+                      ? "border-purple-500 dark:border-purple-400 shadow-purple-500/50 dark:shadow-purple-400/50 shadow-lg dark:shadow-lg animate-pulse border-2"
+                      : isUrgent
+                        ? "border-red-500 dark:border-red-400 shadow-red-500/50 dark:shadow-red-400/50 shadow-lg dark:shadow-lg animate-pulse border-2"
+                        : "dark:border-white"
                   }`}
                 >
                   <CardContent className="p-6">
@@ -508,7 +560,12 @@ export default function TaskManager() {
                             >
                               {task.title}
                             </h3>
-                            {isUrgent && (
+                            {isOverdue && (
+                              <Badge className="bg-purple-500 text-white border-purple-600 text-xs flex items-center gap-1">
+                                <AlertTriangle className="w-3 h-3" /> OVERDUE
+                              </Badge>
+                            )}
+                            {isUrgent && !isOverdue && (
                               <Badge className="bg-red-500 text-white border-red-600 text-xs animate-pulse">
                                 URGENT
                               </Badge>
@@ -521,9 +578,11 @@ export default function TaskManager() {
                             {task.dueDate && (
                               <div
                                 className={`flex items-center gap-1 text-sm ${
-                                  isUrgent
-                                    ? "text-red-600 dark:text-red-400 font-semibold"
-                                    : "text-gray-500 dark:text-white"
+                                  isOverdue
+                                    ? "text-purple-600 dark:text-purple-400 font-semibold"
+                                    : isUrgent
+                                      ? "text-red-600 dark:text-red-400 font-semibold"
+                                      : "text-gray-500 dark:text-white"
                                 }`}
                               >
                                 <Calendar className="w-3 h-3" />
