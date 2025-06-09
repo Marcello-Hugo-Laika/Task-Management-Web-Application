@@ -574,7 +574,7 @@ export default function TaskManager() {
                   key={task.id}
                   className={`hover:shadow-md transition-all duration-300 ${
                     isOverdue
-                      ? "border-red-500 shadow-red-500/50 shadow-lg animate-pulse border-2"
+                      ? "border-red-500 animate-pulse border-2 hover:shadow-red-500/50 hover:shadow-lg"
                       : isUrgent
                         ? "border-orange-500 border-2 hover:shadow-orange-500/50 hover:shadow-lg"
                         : "dark:border-white"
