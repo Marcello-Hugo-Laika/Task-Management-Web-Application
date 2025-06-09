@@ -195,7 +195,7 @@ export default function TaskManager() {
       return task.status === filter
     })
     .sort((a, b) => {
-      // Calculate urgency for both tasks
+      // Calculate urgency and days until due for both tasks
       const daysUntilDueA = getDaysUntilDue(a.dueDate)
       const daysUntilDueB = getDaysUntilDue(b.dueDate)
 
@@ -206,7 +206,17 @@ export default function TaskManager() {
       if (isUrgentA && !isUrgentB) return -1
       if (!isUrgentA && isUrgentB) return 1
 
-      // If both are urgent or both are normal, sort by priority
+      // If both are urgent, sort by due date first (fastest due date first)
+      if (isUrgentA && isUrgentB) {
+        // Sort by due date first (ascending - fastest due date first)
+        if (daysUntilDueA !== daysUntilDueB) {
+          return (daysUntilDueA || 0) - (daysUntilDueB || 0)
+        }
+        // If same due date, sort by priority (high to low)
+        return getPriorityOrder(a.priority) - getPriorityOrder(b.priority)
+      }
+
+      // If both are normal tasks, sort by priority only
       return getPriorityOrder(a.priority) - getPriorityOrder(b.priority)
     })
 
@@ -405,21 +415,47 @@ export default function TaskManager() {
               <span className="font-semibold">Sorting Order:</span>
               <div className="flex items-center gap-2">
                 <Badge className="bg-red-500 text-white border-red-600 text-xs animate-pulse">URGENT</Badge>
-                <span>→</span>
+                <span>&gt;</span>
                 <span>Normal Tasks</span>
               </div>
             </div>
             <div className="flex items-center gap-4">
-              <span>Within each group (Priority):</span>
+              <span>Urgent Tasks (≤2 days):</span>
+              <div className="flex items-center gap-2">
+                <span className="text-xs bg-red-100 dark:bg-red-900 px-2 py-1 rounded">Due Today</span>
+                <span>&gt;</span>
+                <span className="text-xs bg-red-100 dark:bg-red-900 px-2 py-1 rounded">Due Tomorrow</span>
+                <span>&gt;</span>
+                <span className="text-xs bg-red-100 dark:bg-red-900 px-2 py-1 rounded">Due in 2 days</span>
+              </div>
+            </div>
+            <div className="flex items-center gap-4">
+              <span>Within same due date:</span>
               <div className="flex items-center gap-2">
                 <Badge className="bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 border-red-200 dark:border-red-700">
                   High
                 </Badge>
-                <span>→</span>
+                <span>&gt;</span>
                 <Badge className="bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 border-yellow-200 dark:border-yellow-700">
                   Medium
                 </Badge>
-                <span>→</span>
+                <span>&gt;</span>
+                <Badge className="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 border-green-200 dark:border-green-700">
+                  Low
+                </Badge>
+              </div>
+            </div>
+            <div className="flex items-center gap-4">
+              <span>Normal Tasks (&gt;2 days):</span>
+              <div className="flex items-center gap-2">
+                <Badge className="bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 border-red-200 dark:border-red-700">
+                  High
+                </Badge>
+                <span>&gt;</span>
+                <Badge className="bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 border-yellow-200 dark:border-yellow-700">
+                  Medium
+                </Badge>
+                <span>&gt;</span>
                 <Badge className="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 border-green-200 dark:border-green-700">
                   Low
                 </Badge>
