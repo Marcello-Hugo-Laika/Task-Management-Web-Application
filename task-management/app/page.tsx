@@ -18,7 +18,9 @@ import {
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
-import { Plus, Edit, Trash2, Calendar, Filter } from "lucide-react"
+import { Switch } from "@/components/ui/switch"
+import { Plus, Edit, Trash2, Calendar, Filter, Moon } from "lucide-react"
+import { useTheme } from "next-themes"
 
 interface Task {
   id: string
@@ -39,6 +41,7 @@ export default function TaskManager() {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
   const [editingTask, setEditingTask] = useState<Task | null>(null)
+  const [mounted, setMounted] = useState(false)
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -46,6 +49,13 @@ export default function TaskManager() {
     status: "pending" as Task["status"],
     dueDate: "",
   })
+
+  const { theme, setTheme } = useTheme()
+
+  // After mounting, we can show the theme UI
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   // Load tasks from localStorage on component mount
   useEffect(() => {
@@ -168,22 +178,22 @@ export default function TaskManager() {
   const getPriorityColor = (priority: Task["priority"]) => {
     switch (priority) {
       case "high":
-        return "bg-red-100 text-red-800 border-red-200"
+        return "bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 border-red-200 dark:border-red-700"
       case "medium":
-        return "bg-yellow-100 text-yellow-800 border-yellow-200"
+        return "bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 border-yellow-200 dark:border-yellow-700"
       case "low":
-        return "bg-green-100 text-green-800 border-green-200"
+        return "bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 border-green-200 dark:border-green-700"
     }
   }
 
   const getStatusColor = (status: Task["status"]) => {
     switch (status) {
       case "completed":
-        return "bg-green-100 text-green-800 border-green-200"
+        return "bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 border-green-200 dark:border-green-700"
       case "in-progress":
-        return "bg-blue-100 text-blue-800 border-blue-200"
+        return "bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 border-blue-200 dark:border-blue-700"
       case "pending":
-        return "bg-gray-100 text-gray-800 border-gray-200"
+        return "bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 border-gray-200 dark:border-gray-600"
     }
   }
 
@@ -192,13 +202,29 @@ export default function TaskManager() {
     return new Date(dateString).toLocaleDateString()
   }
 
+  // Handle theme toggle
+  const handleThemeToggle = () => {
+    setTheme(theme === "dark" ? "light" : "dark")
+  }
+
   return (
-    <div className="min-h-screen bg-gray-50 p-4">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-4 transition-colors duration-200">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Task Management</h1>
-          <p className="text-gray-600">Organize and track your tasks efficiently - automatically sorted by priority</p>
+        <div className="mb-8 flex justify-between items-center">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">Task Management</h1>
+            <p className="text-gray-600 dark:text-gray-400">
+              Organize and track your tasks efficiently - automatically sorted by priority
+            </p>
+          </div>
+          {mounted && (
+            <div className="flex items-center gap-2">
+              <Moon className="h-4 w-4 text-gray-700 dark:text-gray-300" />
+              <Switch checked={theme === "dark"} onCheckedChange={handleThemeToggle} aria-label="Toggle dark mode" />
+              <span className="text-sm text-gray-700 dark:text-gray-300">Dark Mode</span>
+            </div>
+          )}
         </div>
 
         {/* Controls */}
@@ -307,46 +333,52 @@ export default function TaskManager() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
           <Card>
             <CardContent className="p-4">
-              <div className="text-2xl font-bold">{tasks.length}</div>
-              <div className="text-sm text-gray-600">Total Tasks</div>
+              <div className="text-2xl font-bold dark:text-gray-100">{tasks.length}</div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">Total Tasks</div>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="p-4">
-              <div className="text-2xl font-bold text-gray-600">
+              <div className="text-2xl font-bold text-gray-600 dark:text-gray-300">
                 {tasks.filter((t) => t.status === "pending").length}
               </div>
-              <div className="text-sm text-gray-600">Pending</div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">Pending</div>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="p-4">
-              <div className="text-2xl font-bold text-blue-600">
+              <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
                 {tasks.filter((t) => t.status === "in-progress").length}
               </div>
-              <div className="text-sm text-gray-600">In Progress</div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">In Progress</div>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="p-4">
-              <div className="text-2xl font-bold text-green-600">
+              <div className="text-2xl font-bold text-green-600 dark:text-green-400">
                 {tasks.filter((t) => t.status === "completed").length}
               </div>
-              <div className="text-sm text-gray-600">Completed</div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">Completed</div>
             </CardContent>
           </Card>
         </div>
 
         {/* Priority Legend */}
         <div className="mb-4">
-          <div className="flex items-center gap-4 text-sm text-gray-600">
+          <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
             <span>Tasks sorted by priority:</span>
             <div className="flex items-center gap-2">
-              <Badge className="bg-red-100 text-red-800 border-red-200">High</Badge>
+              <Badge className="bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 border-red-200 dark:border-red-700">
+                High
+              </Badge>
               <span>→</span>
-              <Badge className="bg-yellow-100 text-yellow-800 border-yellow-200">Medium</Badge>
+              <Badge className="bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 border-yellow-200 dark:border-yellow-700">
+                Medium
+              </Badge>
               <span>→</span>
-              <Badge className="bg-green-100 text-green-800 border-green-200">Low</Badge>
+              <Badge className="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 border-green-200 dark:border-green-700">
+                Low
+              </Badge>
             </div>
           </div>
         </div>
@@ -356,7 +388,7 @@ export default function TaskManager() {
           {filteredAndSortedTasks.length === 0 ? (
             <Card>
               <CardContent className="p-8 text-center">
-                <div className="text-gray-500">
+                <div className="text-gray-500 dark:text-gray-400">
                   {filter === "all" ? "No tasks yet. Create your first task!" : `No ${filter} tasks found.`}
                 </div>
               </CardContent>
@@ -374,16 +406,22 @@ export default function TaskManager() {
                       />
                       <div className="flex-1">
                         <h3
-                          className={`font-semibold text-lg ${task.status === "completed" ? "line-through text-gray-500" : ""}`}
+                          className={`font-semibold text-lg ${
+                            task.status === "completed"
+                              ? "line-through text-gray-500 dark:text-gray-400"
+                              : "dark:text-gray-100"
+                          }`}
                         >
                           {task.title}
                         </h3>
-                        {task.description && <p className="text-gray-600 mt-1">{task.description}</p>}
+                        {task.description && (
+                          <p className="text-gray-600 dark:text-gray-400 mt-1">{task.description}</p>
+                        )}
                         <div className="flex flex-wrap items-center gap-2 mt-3">
                           <Badge className={getPriorityColor(task.priority)}>{task.priority}</Badge>
                           <Badge className={getStatusColor(task.status)}>{task.status}</Badge>
                           {task.dueDate && (
-                            <div className="flex items-center gap-1 text-sm text-gray-500">
+                            <div className="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400">
                               <Calendar className="w-3 h-3" />
                               {formatDate(task.dueDate)}
                             </div>
@@ -399,7 +437,7 @@ export default function TaskManager() {
                         variant="outline"
                         size="sm"
                         onClick={() => handleDeleteTask(task.id)}
-                        className="text-red-600 hover:text-red-700"
+                        className="text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
                       >
                         <Trash2 className="w-4 h-4" />
                       </Button>
