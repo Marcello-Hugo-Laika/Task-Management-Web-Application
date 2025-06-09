@@ -49,6 +49,7 @@ export default function TaskManager() {
     status: "pending" as Task["status"],
     dueDate: "",
   })
+  const [showDetailedSorting, setShowDetailedSorting] = useState(false)
 
   const { theme, setTheme } = useTheme()
 
@@ -456,6 +457,22 @@ export default function TaskManager() {
             <div className="flex items-center gap-4">
               <span className="font-semibold">Sorting Order:</span>
               <div className="flex items-center gap-2">
+                <Badge className="bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 border-red-200 dark:border-red-700 hover:bg-red-100 dark:hover:bg-red-900">
+                  High
+                </Badge>
+                <span>&gt;</span>
+                <Badge className="bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 border-yellow-200 dark:border-yellow-700 hover:bg-yellow-100 dark:hover:bg-yellow-900">
+                  Medium
+                </Badge>
+                <span>&gt;</span>
+                <Badge className="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 border-green-200 dark:border-green-700 hover:bg-green-100 dark:hover:bg-green-900">
+                  Low
+                </Badge>
+              </div>
+            </div>
+            <div className="flex items-center gap-4">
+              <span className="font-semibold">Overall Sorting Order:</span>
+              <div className="flex items-center gap-2">
                 <Badge className="bg-red-500 text-white border-red-600 text-xs hover:bg-red-500 dark:hover:bg-red-500">
                   OVERDUE
                 </Badge>
@@ -466,59 +483,72 @@ export default function TaskManager() {
                 <span>&gt;</span>
                 <span>Normal Tasks</span>
               </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowDetailedSorting(!showDetailedSorting)}
+                className="ml-auto text-xs"
+              >
+                {showDetailedSorting ? "Hide Details" : "Show Details"}
+              </Button>
             </div>
-            <div className="flex items-center gap-4">
-              <span>Overdue Tasks (&lt;0 days):</span>
-              <div className="flex items-center gap-2">
-                <span className="text-xs bg-red-100 dark:bg-red-900 px-2 py-1 rounded">Most Overdue</span>
-                <span>&gt;</span>
-                <span className="text-xs bg-red-100 dark:bg-red-900 px-2 py-1 rounded">Less Overdue</span>
-                <span className="text-sm mx-2">then by</span>
-                <Badge className="bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 border-red-200 dark:border-red-700 hover:bg-red-100 dark:hover:bg-red-900">
-                  High
-                </Badge>
-                <span>&gt;</span>
-                <Badge className="bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 border-yellow-200 dark:border-yellow-700 hover:bg-yellow-100 dark:hover:bg-yellow-900">
-                  Medium
-                </Badge>
-                <span>&gt;</span>
-                <Badge className="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 border-green-200 dark:border-green-700 hover:bg-green-100 dark:hover:bg-green-900">
-                  Low
-                </Badge>
-              </div>
-            </div>
-            <div className="flex items-center gap-4">
-              <span>Urgent Tasks (0-2 days):</span>
-              <div className="flex items-center gap-2">
-                <Badge className="bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 border-red-200 dark:border-red-700 hover:bg-red-100 dark:hover:bg-red-900">
-                  High
-                </Badge>
-                <span>&gt;</span>
-                <Badge className="bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 border-yellow-200 dark:border-yellow-700 hover:bg-yellow-100 dark:hover:bg-yellow-900">
-                  Medium
-                </Badge>
-                <span>&gt;</span>
-                <Badge className="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 border-green-200 dark:border-green-700 hover:bg-green-100 dark:hover:bg-green-900">
-                  Low
-                </Badge>
-              </div>
-            </div>
-            <div className="flex items-center gap-4">
-              <span>Normal Tasks (&gt;2 days):</span>
-              <div className="flex items-center gap-2">
-                <Badge className="bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 border-red-200 dark:border-red-700 hover:bg-red-100 dark:hover:bg-red-900">
-                  High
-                </Badge>
-                <span>&gt;</span>
-                <Badge className="bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 border-yellow-200 dark:border-yellow-700 hover:bg-yellow-100 dark:hover:bg-yellow-900">
-                  Medium
-                </Badge>
-                <span>&gt;</span>
-                <Badge className="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 border-green-200 dark:border-green-700 hover:bg-green-100 dark:hover:bg-green-900">
-                  Low
-                </Badge>
-              </div>
-            </div>
+
+            {showDetailedSorting && (
+              <>
+                <div className="flex items-center gap-4">
+                  <span>Overdue Tasks (&lt;0 days):</span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs bg-red-100 dark:bg-red-900 px-2 py-1 rounded">Most Overdue</span>
+                    <span>&gt;</span>
+                    <span className="text-xs bg-red-100 dark:bg-red-900 px-2 py-1 rounded">Less Overdue</span>
+                    <span className="text-sm mx-2">then by</span>
+                    <Badge className="bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 border-red-200 dark:border-red-700 hover:bg-red-100 dark:hover:bg-red-900">
+                      High
+                    </Badge>
+                    <span>&gt;</span>
+                    <Badge className="bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 border-yellow-200 dark:border-yellow-700 hover:bg-yellow-100 dark:hover:bg-yellow-900">
+                      Medium
+                    </Badge>
+                    <span>&gt;</span>
+                    <Badge className="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 border-green-200 dark:border-green-700 hover:bg-green-100 dark:hover:bg-green-900">
+                      Low
+                    </Badge>
+                  </div>
+                </div>
+                <div className="flex items-center gap-4">
+                  <span>Urgent Tasks (0-2 days):</span>
+                  <div className="flex items-center gap-2">
+                    <Badge className="bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 border-red-200 dark:border-red-700 hover:bg-red-100 dark:hover:bg-red-900">
+                      High
+                    </Badge>
+                    <span>&gt;</span>
+                    <Badge className="bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 border-yellow-200 dark:border-yellow-700 hover:bg-yellow-100 dark:hover:bg-yellow-900">
+                      Medium
+                    </Badge>
+                    <span>&gt;</span>
+                    <Badge className="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 border-green-200 dark:border-green-700 hover:bg-green-100 dark:hover:bg-green-900">
+                      Low
+                    </Badge>
+                  </div>
+                </div>
+                <div className="flex items-center gap-4">
+                  <span>Normal Tasks (&gt;2 days):</span>
+                  <div className="flex items-center gap-2">
+                    <Badge className="bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 border-red-200 dark:border-red-700 hover:bg-red-100 dark:hover:bg-red-900">
+                      High
+                    </Badge>
+                    <span>&gt;</span>
+                    <Badge className="bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 border-yellow-200 dark:border-yellow-700 hover:bg-yellow-100 dark:hover:bg-yellow-900">
+                      Medium
+                    </Badge>
+                    <span>&gt;</span>
+                    <Badge className="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 border-green-200 dark:border-green-700 hover:bg-green-100 dark:hover:bg-green-900">
+                      Low
+                    </Badge>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         </div>
 
