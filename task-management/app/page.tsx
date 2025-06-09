@@ -409,18 +409,18 @@ export default function TaskManager() {
             </CardContent>
           </Card>
           {overdueCount > 0 && (
-            <Card className="dark:border-white border-purple-500 dark:border-purple-400 bg-purple-50 dark:bg-purple-900/20">
+            <Card className="border-red-500 dark:border-red-400 bg-red-50 dark:bg-red-900/20 dark:border-white">
               <CardContent className="p-4">
-                <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">{overdueCount}</div>
-                <div className="text-sm text-purple-600 dark:text-purple-400">Overdue</div>
+                <div className="text-2xl font-bold text-red-600 dark:text-red-400">{overdueCount}</div>
+                <div className="text-sm text-red-600 dark:text-red-400">Overdue</div>
               </CardContent>
             </Card>
           )}
           {urgentCount > 0 && (
-            <Card className="dark:border-white border-red-500 dark:border-red-400 bg-red-50 dark:bg-red-900/20">
+            <Card className="border-orange-500 dark:border-orange-400 bg-orange-50 dark:bg-orange-900/20 dark:border-white">
               <CardContent className="p-4">
-                <div className="text-2xl font-bold text-red-600 dark:text-red-400">{urgentCount}</div>
-                <div className="text-sm text-red-600 dark:text-red-400">Urgent</div>
+                <div className="text-2xl font-bold text-orange-600 dark:text-orange-400">{urgentCount}</div>
+                <div className="text-sm text-orange-600 dark:text-orange-400">Urgent</div>
               </CardContent>
             </Card>
           )}
@@ -456,9 +456,9 @@ export default function TaskManager() {
             <div className="flex items-center gap-4">
               <span className="font-semibold">Sorting Order:</span>
               <div className="flex items-center gap-2">
-                <Badge className="bg-purple-500 text-white border-purple-600 text-xs">OVERDUE</Badge>
+                <Badge className="bg-red-500 text-white border-red-600 text-xs">OVERDUE</Badge>
                 <span>&gt;</span>
-                <Badge className="bg-red-500 text-white border-red-600 text-xs animate-pulse">URGENT</Badge>
+                <Badge className="bg-orange-500 text-white border-orange-600 text-xs animate-pulse">URGENT</Badge>
                 <span>&gt;</span>
                 <span>Normal Tasks</span>
               </div>
@@ -466,9 +466,9 @@ export default function TaskManager() {
             <div className="flex items-center gap-4">
               <span>Overdue Tasks (&lt;0 days):</span>
               <div className="flex items-center gap-2">
-                <span className="text-xs bg-purple-100 dark:bg-purple-900 px-2 py-1 rounded">Most Overdue</span>
+                <span className="text-xs bg-red-100 dark:bg-red-900 px-2 py-1 rounded">Most Overdue</span>
                 <span>&gt;</span>
-                <span className="text-xs bg-purple-100 dark:bg-purple-900 px-2 py-1 rounded">Less Overdue</span>
+                <span className="text-xs bg-red-100 dark:bg-red-900 px-2 py-1 rounded">Less Overdue</span>
                 <span className="text-sm mx-2">then by</span>
                 <Badge className="bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 border-red-200 dark:border-red-700">
                   High
@@ -540,9 +540,9 @@ export default function TaskManager() {
                   key={task.id}
                   className={`hover:shadow-md transition-all duration-300 ${
                     isOverdue
-                      ? "border-purple-500 dark:border-purple-400 shadow-purple-500/50 dark:shadow-purple-400/50 shadow-lg dark:shadow-lg animate-pulse border-2"
+                      ? "border-red-500 dark:border-red-400 shadow-red-500/50 dark:shadow-red-400/50 shadow-lg dark:shadow-lg animate-pulse border-2"
                       : isUrgent
-                        ? "border-red-500 dark:border-red-400 shadow-red-500/50 dark:shadow-red-400/50 shadow-lg dark:shadow-lg animate-pulse border-2"
+                        ? "border-orange-500 dark:border-orange-400 shadow-orange-500/50 dark:shadow-orange-400/50 shadow-lg dark:shadow-lg animate-pulse border-2"
                         : "dark:border-white"
                   }`}
                 >
@@ -566,12 +566,12 @@ export default function TaskManager() {
                               {task.title}
                             </h3>
                             {isOverdue && (
-                              <Badge className="bg-purple-500 text-white border-purple-600 text-xs flex items-center gap-1">
+                              <Badge className="bg-red-500 text-white border-red-600 text-xs flex items-center gap-1">
                                 <AlertTriangle className="w-3 h-3" /> OVERDUE
                               </Badge>
                             )}
                             {isUrgent && !isOverdue && (
-                              <Badge className="bg-red-500 text-white border-red-600 text-xs animate-pulse">
+                              <Badge className="bg-orange-500 text-white border-orange-600 text-xs animate-pulse">
                                 URGENT
                               </Badge>
                             )}
@@ -584,9 +584,9 @@ export default function TaskManager() {
                               <div
                                 className={`flex items-center gap-1 text-sm ${
                                   isOverdue
-                                    ? "text-purple-600 dark:text-purple-400 font-semibold"
+                                    ? "text-red-600 dark:text-red-400 font-semibold"
                                     : isUrgent
-                                      ? "text-red-600 dark:text-red-400 font-semibold"
+                                      ? "text-orange-600 dark:text-orange-400 font-semibold"
                                       : "text-gray-500 dark:text-white"
                                 }`}
                               >
