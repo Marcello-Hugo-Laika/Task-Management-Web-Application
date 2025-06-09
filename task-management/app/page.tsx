@@ -409,18 +409,18 @@ export default function TaskManager() {
             </CardContent>
           </Card>
           {overdueCount > 0 && (
-            <Card className="border-red-500 dark:border-red-400 bg-red-50 dark:bg-red-900/20 dark:border-white">
+            <Card className="border-red-500 bg-red-50 dark:bg-red-50/10 dark:border-red-500">
               <CardContent className="p-4">
-                <div className="text-2xl font-bold text-red-600 dark:text-red-400">{overdueCount}</div>
-                <div className="text-sm text-red-600 dark:text-red-400">Overdue</div>
+                <div className="text-2xl font-bold text-red-600 dark:text-red-500">{overdueCount}</div>
+                <div className="text-sm text-red-600 dark:text-red-500">Overdue</div>
               </CardContent>
             </Card>
           )}
           {urgentCount > 0 && (
-            <Card className="border-orange-500 dark:border-orange-400 bg-orange-50 dark:bg-orange-900/20 dark:border-white">
+            <Card className="border-orange-500 bg-orange-50 dark:bg-orange-50/10 dark:border-orange-500">
               <CardContent className="p-4">
-                <div className="text-2xl font-bold text-orange-600 dark:text-orange-400">{urgentCount}</div>
-                <div className="text-sm text-orange-600 dark:text-orange-400">Urgent</div>
+                <div className="text-2xl font-bold text-orange-600 dark:text-orange-500">{urgentCount}</div>
+                <div className="text-sm text-orange-600 dark:text-orange-500">Urgent</div>
               </CardContent>
             </Card>
           )}
@@ -544,9 +544,9 @@ export default function TaskManager() {
                   key={task.id}
                   className={`hover:shadow-md transition-all duration-300 ${
                     isOverdue
-                      ? "border-red-500 dark:border-red-400 shadow-red-500/50 dark:shadow-red-400/50 shadow-lg dark:shadow-lg animate-pulse border-2"
+                      ? "border-red-500 shadow-red-500/50 shadow-lg animate-pulse border-2"
                       : isUrgent
-                        ? "border-orange-500 dark:border-orange-400 shadow-orange-500/50 dark:shadow-orange-400/50 shadow-lg dark:shadow-lg animate-pulse border-2"
+                        ? "border-orange-500 shadow-orange-500/50 shadow-lg animate-pulse border-2"
                         : "dark:border-white"
                   }`}
                 >
