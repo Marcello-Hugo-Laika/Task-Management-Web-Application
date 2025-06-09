@@ -235,22 +235,22 @@ export default function TaskManager() {
   const getPriorityColor = (priority: Task["priority"]) => {
     switch (priority) {
       case "high":
-        return "bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 border-red-200 dark:border-red-700"
+        return "bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 border-red-200 dark:border-red-700 hover:bg-red-100 dark:hover:bg-red-900"
       case "medium":
-        return "bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 border-yellow-200 dark:border-yellow-700"
+        return "bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 border-yellow-200 dark:border-yellow-700 hover:bg-yellow-100 dark:hover:bg-yellow-900"
       case "low":
-        return "bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 border-green-200 dark:border-green-700"
+        return "bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 border-green-200 dark:border-green-700 hover:bg-green-100 dark:hover:bg-green-900"
     }
   }
 
   const getStatusColor = (status: Task["status"]) => {
     switch (status) {
       case "completed":
-        return "bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 border-green-200 dark:border-green-700"
+        return "bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 border-green-200 dark:border-green-700 hover:bg-green-100 dark:hover:bg-green-900"
       case "in-progress":
-        return "bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 border-blue-200 dark:border-blue-700"
+        return "bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 border-blue-200 dark:border-blue-700 hover:bg-blue-100 dark:hover:bg-blue-900"
       case "pending":
-        return "bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 border-gray-200 dark:border-gray-600"
+        return "bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 border-gray-200 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800"
     }
   }
 
@@ -456,9 +456,13 @@ export default function TaskManager() {
             <div className="flex items-center gap-4">
               <span className="font-semibold">Sorting Order:</span>
               <div className="flex items-center gap-2">
-                <Badge className="bg-red-500 text-white border-red-600 text-xs">OVERDUE</Badge>
+                <Badge className="bg-red-500 text-white border-red-600 text-xs hover:bg-red-500 dark:hover:bg-red-500">
+                  OVERDUE
+                </Badge>
                 <span>&gt;</span>
-                <Badge className="bg-orange-500 text-white border-orange-600 text-xs animate-pulse">URGENT</Badge>
+                <Badge className="bg-orange-500 text-white border-orange-600 text-xs hover:bg-orange-500 dark:hover:bg-orange-500">
+                  URGENT
+                </Badge>
                 <span>&gt;</span>
                 <span>Normal Tasks</span>
               </div>
@@ -470,15 +474,15 @@ export default function TaskManager() {
                 <span>&gt;</span>
                 <span className="text-xs bg-red-100 dark:bg-red-900 px-2 py-1 rounded">Less Overdue</span>
                 <span className="text-sm mx-2">then by</span>
-                <Badge className="bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 border-red-200 dark:border-red-700">
+                <Badge className="bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 border-red-200 dark:border-red-700 hover:bg-red-100 dark:hover:bg-red-900">
                   High
                 </Badge>
                 <span>&gt;</span>
-                <Badge className="bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 border-yellow-200 dark:border-yellow-700">
+                <Badge className="bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 border-yellow-200 dark:border-yellow-700 hover:bg-yellow-100 dark:hover:bg-yellow-900">
                   Medium
                 </Badge>
                 <span>&gt;</span>
-                <Badge className="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 border-green-200 dark:border-green-700">
+                <Badge className="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 border-green-200 dark:border-green-700 hover:bg-green-100 dark:hover:bg-green-900">
                   Low
                 </Badge>
               </div>
@@ -486,15 +490,15 @@ export default function TaskManager() {
             <div className="flex items-center gap-4">
               <span>Urgent Tasks (0-2 days):</span>
               <div className="flex items-center gap-2">
-                <Badge className="bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 border-red-200 dark:border-red-700">
+                <Badge className="bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 border-red-200 dark:border-red-700 hover:bg-red-100 dark:hover:bg-red-900">
                   High
                 </Badge>
                 <span>&gt;</span>
-                <Badge className="bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 border-yellow-200 dark:border-yellow-700">
+                <Badge className="bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 border-yellow-200 dark:border-yellow-700 hover:bg-yellow-100 dark:hover:bg-yellow-900">
                   Medium
                 </Badge>
                 <span>&gt;</span>
-                <Badge className="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 border-green-200 dark:border-green-700">
+                <Badge className="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 border-green-200 dark:border-green-700 hover:bg-green-100 dark:hover:bg-green-900">
                   Low
                 </Badge>
               </div>
@@ -502,15 +506,15 @@ export default function TaskManager() {
             <div className="flex items-center gap-4">
               <span>Normal Tasks (&gt;2 days):</span>
               <div className="flex items-center gap-2">
-                <Badge className="bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 border-red-200 dark:border-red-700">
+                <Badge className="bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 border-red-200 dark:border-red-700 hover:bg-red-100 dark:hover:bg-red-900">
                   High
                 </Badge>
                 <span>&gt;</span>
-                <Badge className="bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 border-yellow-200 dark:border-yellow-700">
+                <Badge className="bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 border-yellow-200 dark:border-yellow-700 hover:bg-yellow-100 dark:hover:bg-yellow-900">
                   Medium
                 </Badge>
                 <span>&gt;</span>
-                <Badge className="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 border-green-200 dark:border-green-700">
+                <Badge className="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 border-green-200 dark:border-green-700 hover:bg-green-100 dark:hover:bg-green-900">
                   Low
                 </Badge>
               </div>
@@ -566,12 +570,12 @@ export default function TaskManager() {
                               {task.title}
                             </h3>
                             {isOverdue && (
-                              <Badge className="bg-red-500 text-white border-red-600 text-xs flex items-center gap-1">
+                              <Badge className="bg-red-500 text-white border-red-600 text-xs flex items-center gap-1 hover:bg-red-500 dark:hover:bg-red-500">
                                 <AlertTriangle className="w-3 h-3" /> OVERDUE
                               </Badge>
                             )}
                             {isUrgent && !isOverdue && (
-                              <Badge className="bg-orange-500 text-white border-orange-600 text-xs animate-pulse">
+                              <Badge className="bg-orange-500 text-white border-orange-600 text-xs animate-pulse hover:bg-orange-500 dark:hover:bg-orange-500">
                                 URGENT
                               </Badge>
                             )}
